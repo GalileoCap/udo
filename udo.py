@@ -39,21 +39,21 @@ TaskMsg = {
   ],
 }
 
-def TaskLoopA():
-  return {
-    'name': 'LoopA',
-    'dependsOn': [TaskLoopC],
-    'actions': [printMsg],
-  }
-
-TaskLoopB = {
-  'name': 'LoopB',
+# def TaskLoopA():
+  # return {
+    # 'name': 'LoopA',
+    # 'dependsOn': [TaskLoopC],
+    # 'actions': [printMsg],
+  # }
+#
+# TaskLoopB = {
+  # 'name': 'LoopB',
   # 'dependsOn': [TaskLoopA],
-  'actions': [printMsg],
-}
-
-TaskLoopC = {
-  'name': 'LoopC',
-  'dependsOn': [TaskLoopB],
-  'actions': [printMsg],
-}
+  # 'actions': [printMsg],
+# }
+#
+# TaskLoopC = {
+  # 'name': 'LoopC',
+  # 'dependsOn': [TaskLoopB],
+  # 'actions': [printMsg],
+# }

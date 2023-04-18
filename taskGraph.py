@@ -17,13 +17,17 @@ class Task:
     self.actions = data.get('actions')
 
   def execute(self):
+    print('*', self.name)
     for action in self.actions:
       if callable(action):
         action()
       elif type(action) == str:
-        res = subprocess.run(action, shell = True, capture_output = True)
+        res = subprocess.run(
+          action, shell = True,
+          stdout = subprocess.PIPE if self.capture < 1 else None,
+          stderr = subprocess.PIPE if self.capture < 0 else None,
+        )
         res.check_returncode()
-        print(res.stdout, res.stderr)
       else:
         print('ERROR')
 
