@@ -33,9 +33,10 @@ def cleanTasks(tasks):
   for task in tasks:
     if not task.isSubtask:
       print(f'  * {task.name}')
-    for out in task.outs:
-      if os.path.isdir(out): rmtree(out)
-      elif os.path.isfile(out): os.remove(out)
+    if task.clean:
+      for out in task.outs:
+        if os.path.isdir(out): rmtree(out)
+        elif os.path.isfile(out): os.remove(out)
 
 def printHelp(tasks):
   for task in tasks:

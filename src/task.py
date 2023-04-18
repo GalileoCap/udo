@@ -18,6 +18,7 @@ class Task:
     self.description = data.get('description', '')
     self.deps = data.get('deps', [])
     self.outs = data.get('outs', [])
+    self.clean = data.get('clean', True)
     self.capture = data.get('capture', 0)
     self.cache = getCache(self.name)
     self.isSubtask = isSubtask

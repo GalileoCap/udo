@@ -20,6 +20,7 @@ def Install():
     'description': 'Install the executable',
     'deps': ['./build/dist/udo'],
     'outs': [opath],
+    'clean': False,
 
     'actions': [
       f'cp ./build/dist/udo {opath}', 
