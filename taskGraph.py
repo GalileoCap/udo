@@ -1,115 +1,34 @@
-from importlib import import_module
-import subprocess
-import os
-
-from cache import getCache, setCache
-from utils import hashFile
-
-class Task:
-  def __init__(self, name, func):
-    self.func = func
-
-    data = func() if callable(func) else func
-    if type(data) != dict:
-      raise TypeError(f'Wrong type of task ({type(data)}): {data}')
-
-    self.name = data.get('name', name.lstrip('Task'))
-    self.description = data.get('description', '')
-    self.deps = data.get('deps', [])
-    self.outs = data.get('outs', [])
-    self.capture = data.get('capture', 0)
-    self.actions = data.get('actions')
-    
-    self.cache = getCache(self.name)
-
-  def execute(self):
-    skipRun = self.checkCache()
-    if skipRun:
-      print('-', self.name)
-      return
-    
-    print('+', self.name)
-    for action in self.actions:
-      if callable(action):
-        action()
-      elif type(action) == str:
-        res = subprocess.run(
-          action, shell = True,
-          stdout = subprocess.PIPE if self.capture < 1 else None,
-          stderr = subprocess.PIPE if self.capture < 0 else None,
-        )
-        res.check_returncode()
-      else:
-        raise TypeError(f'\tWrong type of action ({type(action)}): {action}')
-
-    missingOuts = self.checkOuts()
-    if len(missingOuts) != 0:
-      raise Exception(f'\tNot all outs were created: {missingOuts}')
-    self.cacheOuts()
-
-  def checkCache(self):
-    return len(self.cache) != 0 and self.cache == self.calcCache()
-
-  def checkOuts(self):
-    return [
-      out
-      for out in self.outs
-      if type(out) == str and not os.path.exists(out)
-    ]
-
-  def cacheOuts(self):
-    self.cache = self.calcCache()
-    setCache(self.name, self.cache)
-
-  def getRoots(self):
-    if len(self.parents) == 0:
-      return [self]
-
-    roots = []
-    for parent in self.parents:
-      roots += parent.getRoots()
-    return roots
-
-  #************************************************************
-  #* Utils ****************************************************
-  def calcCache(self):
-    return {
-      out: hashFile(out) if os.path.exists(out) else ''
-      for out in self.outs
-      if type(out) == str
-    }
-
-  def __repr__(self):
-    name = self.name
-    description = self.description
-    deps = self.deps
-    outs = self.outs
-    capture = self.capture
-    actions = self.actions
-    return f'Task<{name},{description},{deps=},{outs=},{capture=},{actions=}>'
-  def __str__(self):
-    return self.__repr__()
-
 class TaskGraph:
+  class Node:
+    def __init__(self, task):
+      self.task = task
+      self.parents = []
+      self.children = []
+
+    def getRoots(self):
+      if len(self.parents) == 0:
+        return [self]
+
+      roots = []
+      for parent in self.parents:
+        roots += parent.getRoots()
+      return roots
+
   def __init__(self, tasks):
-    self.tasks = tasks
+    self.nodes = [self.Node(task) for task in tasks]
 
   def execute(self, targets):
     #TODO: Change to pseudo-dfs to make it easier to follow
-    for task in self.tasks:
-      task.visited = 0
-    queue = []
-    if len(targets) == 0:
-      queue = [task for task in self.tasks if len(task.parents) == 0]
-    else:
-      for target in targets:
-        queue += self.getNodeByName(target).getRoots()
+    queue = self.getRoots(targets)
+
+    for node in self.nodes:
+      node.visited = 0
 
     while len(queue) != 0:
-      task = queue.pop(0)
-      task.execute()
+      node = queue.pop(0)
+      node.task.execute()
 
-      for child in task.children:
+      for child in node.children:
         child.visited += 1
         if child.visited == len(child.parents):
           queue.append(child)
@@ -127,73 +46,71 @@ class TaskGraph:
       raise Exception('Loop found')
 
   def calcEdges(self):
-    for task in self.tasks:
-      task.parents = []
-      task.children = []
-
-    for task in self.tasks:
-      for dep in task.deps:
+    for node in self.nodes:
+      for dep in node.task.deps:
         parent = self.getNodeByDep(dep)
         if parent is None:
-          raise Exception(f'No task matches dependency: {dep}, for task: {task.name}')
+          raise Exception(f'No task matches dependency: {dep}, for task: {node.task.name}')
 
-        task.parents.append(parent)
-        parent.children.append(task)
+        node.parents.append(parent)
+        parent.children.append(node)
 
   #************************************************************
   #* Checks ***************************************************
   def checkEmpty(self):
     res = []
-    for task in self.tasks:
-      if len([action for action in task.actions if action != '']) == 0:
-        res.append(task)
+    for node in self.nodes:
+      if len([action for action in node.task.actions if action != '']) == 0:
+        res.append(node.task)
     return res
 
   def checkMultipleProducers(self):
+    #TODO: Clean
     counts = {} #TODO: Rename
-    for task in self.tasks:
-      for tag in task.outs:
-        counts[tag] = counts.get(tag, []) + [task.name]
+    for node in self.nodes:
+      for tag in node.task.outs:
+        counts[tag] = counts.get(tag, []) + [node.task.name]
     return [(tag, count) for tag, count in counts.items() if len(count) > 1]
 
   def checkLoops(self):
-    for task in self.tasks:
-      task.visited = 0
+    for node in self.nodes:
+      node.visited = 0
 
     cnt = 0
-    queue = [task for task in self.tasks if len(task.parents) == 0]
+    queue = self.getRoots()
     while len(queue) != 0:
-      task = queue.pop(0)
-      for child in task.children:
+      node = queue.pop(0)
+      for child in node.children:
         child.visited += 1
         if child.visited == len(child.parents):
           queue.append(child)
       cnt += 1
 
     #TODO: Detect exactly which loops are there
-    return cnt != len(self.tasks)
+    return cnt != len(self.nodes)
 
   #************************************************************
   #* Utils ****************************************************
+  def getRoots(self, targets = []):
+    if len(targets) == 0:
+      return [node for node in self.nodes if len(node.parents) == 0]
+    else:
+      roots = []
+      for target in targets:
+        roots += self.getNodeByName(target).getRoots()
+      return list(set(roots)) # Remove repeats
+
   def getNodeByName(self, name):
-    for task in self.tasks:
-      if task.name == name:
-        return task
+    for node in self.nodes:
+      if node.task.name == name:
+        return node
     return None
 
   def getNodeByDep(self, dep):
-    for task in self.tasks:
+    for node in self.nodes:
       if (
-        ((callable(dep) or type(dep) == dict) and dep == task.func) or
-        (type(dep) == str and dep in task.outs)
+        ((callable(dep) or type(dep) == dict) and dep == node.task.func) or
+        (type(dep) == str and dep in node.task.outs)
       ):
-        return task
+        return node
     return None
-
-def loadTasks(fpath):
-  mod = import_module(fpath[:-3])
-  return [
-    Task(name, func)
-    for name, func in mod.__dict__.items()
-    if name.startswith('Task') and (callable(func) or type(func) == dict)
-  ]

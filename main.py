@@ -1,4 +1,5 @@
-from taskGraph import TaskGraph, loadTasks
+from taskGraph import TaskGraph
+from task import loadTasks
 from cache import loadCache, saveCache
 from utils import parseArgs
 
