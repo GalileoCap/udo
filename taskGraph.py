@@ -10,8 +10,8 @@ class Task:
 
     self.name = data.get('name', name)
     self.description = data.get('description', '')
-    self.dependsOn = data.get('dependsOn', [])
-    self.produces = data.get('produces', [])
+    self.deps = data.get('deps', [])
+    self.outs = data.get('outs', [])
     self.capture = data.get('capture', 0)
     self.actions = data.get('actions')
 
@@ -30,14 +30,16 @@ class Task:
       else:
         raise TypeError(f'\tWrong type of action ({type(action)}): {action}')
 
+  #************************************************************
+  #* Utils ****************************************************
   def __repr__(self):
     name = self.name
     description = self.description
-    dependsOn = self.dependsOn
-    produces = self.produces
+    deps = self.deps
+    outs = self.outs
     capture = self.capture
     actions = self.actions
-    return f'Task<{name},{description},{dependsOn=},{produces=},{capture=},{actions=}>'
+    return f'Task<{name},{description},{deps=},{outs=},{capture=},{actions=}>'
   def __str__(self):
     return self.__repr__()
 
@@ -78,7 +80,7 @@ class TaskGraph:
       task.children = []
 
     for task in self.tasks:
-      for dep in task.dependsOn:
+      for dep in task.deps:
         parent = self.getNodeByDep(dep)
         if parent is None:
           raise Exception(f'No task matches dependency: {dep}, for task: {task.name}')
@@ -86,6 +88,8 @@ class TaskGraph:
         task.parents.append(parent)
         parent.children.append(task)
 
+  #************************************************************
+  #* Checks ***************************************************
   def checkEmpty(self):
     res = []
     for task in self.tasks:
@@ -96,7 +100,7 @@ class TaskGraph:
   def checkMultipleProducers(self):
     counts = {} #TODO: Rename
     for task in self.tasks:
-      for tag in task.produces:
+      for tag in task.outs:
         counts[tag] = counts.get(tag, []) + [task.name]
     return [(tag, count) for tag, count in counts.items() if len(count) > 1]
 
@@ -117,11 +121,13 @@ class TaskGraph:
     #TODO: Detect exactly which loops are there
     return cnt != len(self.tasks)
 
+  #************************************************************
+  #* Utils ****************************************************
   def getNodeByDep(self, dep):
     for task in self.tasks:
       if (
         ((callable(dep) or type(dep) == dict) and dep == task.func) or
-        (type(dep) == str and dep in task.produces)
+        (type(dep) == str and dep in task.outs)
       ):
         return task
     return None

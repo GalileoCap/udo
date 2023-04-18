@@ -5,8 +5,8 @@ def TaskTouch():
     'name': 'Touch',
     'description': 'Creates the file',
 
-    'dependsOn': [],
-    'produces': [FPATH],
+    'deps': [],
+    'outs': [FPATH],
 
     'capture': 1,
     'actions': [
@@ -17,7 +17,7 @@ def TaskTouch():
 
 TaskRemoveTouch = {
   'name': 'RemoveTouch',
-  'dependsOn': [FPATH],
+  'deps': [FPATH],
 
   'actions': [
     f'rm {FPATH}',
@@ -42,18 +42,18 @@ TaskMsg = {
 # def TaskLoopA():
   # return {
     # 'name': 'LoopA',
-    # 'dependsOn': [TaskLoopC],
+    # 'deps': [TaskLoopC],
     # 'actions': [printMsg],
   # }
 #
 # TaskLoopB = {
   # 'name': 'LoopB',
-  # 'dependsOn': [TaskLoopA],
+  # 'deps': [TaskLoopA],
   # 'actions': [printMsg],
 # }
 #
 # TaskLoopC = {
   # 'name': 'LoopC',
-  # 'dependsOn': [TaskLoopB],
+  # 'deps': [TaskLoopB],
   # 'actions': [printMsg],
 # }
