@@ -1,3 +1,5 @@
+import os
+
 def TaskBuild():
   return {
     'name': 'build',
@@ -7,6 +9,19 @@ def TaskBuild():
 
     'actions': [
       'pyinstaller -F src/main.py --name udo --distpath build/dist --workpath build/tmp --specpath build',
+    ],
+  }
+
+def TaskInstall():
+  opath = os.path.expanduser('~/bin/udo')
+
+  return {
+    'description': 'Install the executable',
+    'deps': ['./build/dist/udo'],
+    'outs': [opath],
+
+    'actions': [
+      f'cp ./build/dist/udo {opath}', 
     ],
   }
 
