@@ -16,7 +16,6 @@ def TaskTouch():
   }
 
 TaskRemoveTouch = {
-  'name': 'RemoveTouch',
   'deps': [FPATH],
 
   'actions': [
@@ -31,8 +30,6 @@ def printMsg():
   print(f'Ahoy my friend!... For the {msgCount}st,nd,rd,th time')
 
 TaskMsg = {
-  'name': 'Msg',
-
   'capture': 1,
   'actions': [
     printMsg

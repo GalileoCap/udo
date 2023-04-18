@@ -8,7 +8,7 @@ class Task:
     if type(data) != dict:
       raise TypeError(f'Wrong type of task ({type(data)}): {data}')
 
-    self.name = data.get('name', name)
+    self.name = data.get('name', name.lstrip('Task'))
     self.description = data.get('description', '')
     self.deps = data.get('deps', [])
     self.outs = data.get('outs', [])
