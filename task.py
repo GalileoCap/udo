@@ -1,3 +1,5 @@
+import subprocess
+
 import utils
 
 class Task:
@@ -20,6 +22,18 @@ class Task:
     self.children = []
 
     self.loop_visited = 0
+    self.exec_visited = 0
+
+  def exec(self):
+    for action in self.actions:
+      if callable(action):
+        action()
+      elif type(action) == str:
+        res = subprocess.run(action, shell = True, capture_output = True)
+        res.check_returncode()
+        print(res.stdout, res.stderr)
+      else:
+        print('ERROR')
 
   def __repr__(self):
     name = self.name
