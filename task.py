@@ -66,9 +66,16 @@ class Task:
   #* Utils ****************************************************
   def calcCache(self):
     return {
-      out: hashFile(out) if os.path.exists(out) else ''
-      for out in self.outs
-      if type(out) == str
+      'deps': {
+        dep: hashFile(dep) if os.path.exists(dep) else ''
+        for dep in self.deps 
+        if type(dep) == str
+      },
+      'outs': {
+        out: hashFile(out) if os.path.exists(out) else ''
+        for out in self.outs
+        if type(out) == str
+      },
     }
 
   def __repr__(self):
