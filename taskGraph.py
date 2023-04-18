@@ -69,11 +69,9 @@ class TaskGraph:
     for node in self.nodes:
       for dep in node.task.deps:
         parent = self.getNodeByDep(dep)
-        if parent is None:
-          raise Exception(f'No task matches dependency: {dep}, for task: {node.task.name}')
-
-        node.parents.append(parent)
-        parent.children.append(node)
+        if not parent is None:
+          node.parents.append(parent)
+          parent.children.append(node)
 
   #************************************************************
   #* Checks ***************************************************

@@ -1,4 +1,5 @@
 from importlib import import_module
+import importlib.util
 import subprocess
 import os
 
@@ -81,8 +82,15 @@ class Task:
   def __str__(self):
     return self.__repr__()
 
+def loadModule(fpath):
+  # SEE: https://stackoverflow.com/a/67692
+  spec = importlib.util.spec_from_file_location(fpath[:-3], os.path.join(os.getcwd(), fpath))
+  mod = importlib.util.module_from_spec(spec)
+  spec.loader.exec_module(mod)
+  return mod
+
 def loadTasks(fpath):
-  mod = import_module(fpath[:-3])
+  mod = loadModule(fpath)
   tasks = [
     Task(name, func)
     for name, func in mod.__dict__.items()

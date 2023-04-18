@@ -1,6 +1,18 @@
 FPATH = '/tmp/test.touch'
 DPATH = '/tmp/testDir'
 
+def TaskBuild():
+  return {
+    'name': 'build',
+    'description': 'Compiles the executable',
+    'deps': ['main.py', 'cache.py', 'task.py', 'taskGraph.py', 'utils.py'],
+    'outs': ['./build', './build/dist/udo'],
+
+    'actions': [
+      'pyinstaller -F main.py --name udo --distpath build/dist --workpath build/tmp --specpath build',
+    ],
+  }
+
 def TaskTouch():
   return {
     'name': 'Touch',
