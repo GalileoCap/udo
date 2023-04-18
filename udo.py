@@ -8,8 +8,10 @@ def TaskTouch():
     'dependsOn': [],
     'produces': [FPATH],
 
+    'capture': 1,
     'actions': [
-      f'echo "Ahoy there" > {FPATH}',
+      f'echo "Ahoy there!" > {FPATH}',
+      f'cat {FPATH}',
     ],
   }
 
@@ -22,29 +24,14 @@ TaskRemoveTouch = {
   ],
 }
 
-msgCount = 0
 def printMsg():
-  msgCount += 1
-  print(f'The message has been called: {msgCount} times')
+  print('Ahoy my friend!')
 
-def TaskLoopA():
-  return {
-    'name': 'LoopA',
-    'dependsOn': [TaskLoopB],
+TaskMsg = {
+  'name': 'Msg',
 
-    'capture': 1,
-    'actions': [
-      printMsg
-    ],
-  }
-
-def TaskLoopB():
-  return {
-    'name': 'LoopB',
-    'dependsOn': [TaskLoopB],
-
-    'capture': 1,
-    'actions': [
-      printMsg
-    ],
-  }
+  'capture': 1,
+  'actions': [
+    printMsg
+  ],
+}
