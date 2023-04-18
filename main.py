@@ -5,7 +5,7 @@ from utils import parseArgs
 if __name__ == '__main__':
   args = parseArgs()
 
-  loadCache() #TODO: args.cachePath
+  loadCache(args.cachePath)
 
   tasks = loadTasks(args.file)
 
@@ -14,4 +14,4 @@ if __name__ == '__main__':
   graph.check()
   graph.execute() #TODO: use args.targets
 
-  saveCache() #TODO: args.cachePath
+  saveCache(args.cachePath)

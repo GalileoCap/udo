@@ -11,6 +11,7 @@ def parseArgs():
 
   parser.add_argument('targets', default = '')
   parser.add_argument('-f', '--file', default = 'udo.py')
+  parser.add_argument('--cachePath', default = '.udo.db')
   #TODO: Docs
 
   return parser.parse_args()
