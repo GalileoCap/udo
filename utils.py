@@ -9,7 +9,7 @@ def parseArgs():
     #TODO: Other parameters
   )
 
-  parser.add_argument('targets', default = '')
+  parser.add_argument('targets', nargs = '*', default = '')
   parser.add_argument('-f', '--file', default = 'udo.py')
   parser.add_argument('--cachePath', default = '.udo.db')
   #TODO: Docs

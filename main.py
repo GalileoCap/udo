@@ -12,6 +12,6 @@ if __name__ == '__main__':
   graph = TaskGraph(tasks)
   graph.calcEdges()
   graph.check()
-  graph.execute() #TODO: use args.targets
+  graph.execute(args.targets)
 
   saveCache(args.cachePath)

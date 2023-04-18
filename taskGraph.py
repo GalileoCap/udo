@@ -61,6 +61,15 @@ class Task:
     self.cache = self.calcCache()
     setCache(self.name, self.cache)
 
+  def getRoots(self):
+    if len(self.parents) == 0:
+      return [self]
+
+    roots = []
+    for parent in self.parents:
+      roots += parent.getRoots()
+    return roots
+
   #************************************************************
   #* Utils ****************************************************
   def calcCache(self):
@@ -85,11 +94,16 @@ class TaskGraph:
   def __init__(self, tasks):
     self.tasks = tasks
 
-  def execute(self):
+  def execute(self, targets):
     #TODO: Change to pseudo-dfs to make it easier to follow
     for task in self.tasks:
       task.visited = 0
-    queue = [task for task in self.tasks if len(task.parents) == 0]
+    queue = []
+    if len(targets) == 0:
+      queue = [task for task in self.tasks if len(task.parents) == 0]
+    else:
+      for target in targets:
+        queue += self.getNodeByName(target).getRoots()
 
     while len(queue) != 0:
       task = queue.pop(0)
@@ -161,6 +175,12 @@ class TaskGraph:
 
   #************************************************************
   #* Utils ****************************************************
+  def getNodeByName(self, name):
+    for task in self.tasks:
+      if task.name == name:
+        return task
+    return None
+
   def getNodeByDep(self, dep):
     for task in self.tasks:
       if (
