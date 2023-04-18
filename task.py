@@ -3,7 +3,7 @@ import subprocess
 import os
 
 from cache import getCache, setCache
-from utils import hashFile
+from utils import hashFile, printHelp, cleanTasks
 
 class Task:
   def __init__(self, name, func):
@@ -83,8 +83,32 @@ class Task:
 
 def loadTasks(fpath):
   mod = import_module(fpath[:-3])
-  return [
+  tasks = [
     Task(name, func)
     for name, func in mod.__dict__.items()
     if name.startswith('Task') and (callable(func) or type(func) == dict)
   ]
+
+  hasClean, hasHelp = False, False
+  for task in tasks:
+    hasClean |= task.name == 'clean'
+    hasHelp |= task.name == 'help'
+
+  if not hasClean:
+    tasks.append(TaskClean(tasks))
+  if not hasHelp:
+    tasks.append(TaskHelp(tasks))
+
+  return tasks
+
+def TaskClean(tasks):
+  return Task('clean', {
+    'description': 'Removes all outs created by other tasks that have the "clean" attribute set as True',
+    'actions': [lambda: cleanTasks(tasks)],
+  })
+
+def TaskHelp(tasks):
+  return Task('help', {
+    'description': 'Prints this message',
+    'actions': [lambda: printHelp(tasks)],
+  })

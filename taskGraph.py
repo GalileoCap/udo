@@ -5,6 +5,13 @@ class TaskGraph:
       self.parents = []
       self.children = []
 
+    def execute(self):
+      for parent in self.parents:
+        parent.visited += 1
+        if parent.visited == 1:
+          parent.execute()
+      self.task.execute()
+
     def getRoots(self):
       if len(self.parents) == 0:
         return [self]
@@ -14,24 +21,32 @@ class TaskGraph:
         roots += parent.getRoots()
       return roots
 
+    def getLeaves(self):
+      #TODO: Repeated code from getRoots
+      if len(self.children) == 0:
+        return [self]
+
+      leaves = []
+      for child in self.children:
+        leaves += child.getLeaves()
+      return leaves
+  
+    def __repr__(self):
+      return f'Node<{self.task.__repr__()},parents={len(self.parents)},children={len(self.children)}>'
+    def __str__(self):
+      return self.__repr__()
+
   def __init__(self, tasks):
     self.nodes = [self.Node(task) for task in tasks]
 
   def execute(self, targets):
     #TODO: Change to pseudo-dfs to make it easier to follow
-    queue = self.getRoots(targets)
+    leaves = self.getLeaves(targets)
 
     for node in self.nodes:
       node.visited = 0
-
-    while len(queue) != 0:
-      node = queue.pop(0)
-      node.task.execute()
-
-      for child in node.children:
-        child.visited += 1
-        if child.visited == len(child.parents):
-          queue.append(child)
+    for node in leaves:
+      node.execute()
 
   def check(self):
     emptyTasks = self.checkEmpty()
@@ -99,6 +114,16 @@ class TaskGraph:
       for target in targets:
         roots += self.getNodeByName(target).getRoots()
       return list(set(roots)) # Remove repeats
+
+  def getLeaves(self, targets = []):
+    #TODO: Repeated code with getRoots
+    if len(targets) == 0:
+      return [node for node in self.nodes if len(node.children) == 0]
+    else:
+      leaves = []
+      for target in targets:
+        leaves += [self.getNodeByName(target)]
+      return list(set(leaves)) # Remove repeats
 
   def getNodeByName(self, name):
     for node in self.nodes:

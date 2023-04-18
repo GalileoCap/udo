@@ -1,5 +1,6 @@
 import argparse
 import hashlib
+from shutil import rmtree
 import os
 
 def parseArgs():
@@ -26,3 +27,13 @@ def hashFile(fpath):
     for chunk in iter(lambda: fin.read(1024 * 4), b''):
       md5.update(chunk)
   return md5.digest()
+
+def cleanTasks(tasks):
+  for task in tasks:
+    for out in task.outs:
+      if os.path.isdir(out): rmtree(out)
+      elif os.path.isfile(out): os.remove(out)
+
+def printHelp(tasks):
+  for task in tasks:
+    print(f'* {task.name}{":" if task.description != "" else ""} {task.description}')
