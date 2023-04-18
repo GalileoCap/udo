@@ -1,15 +1,6 @@
-from importlib import import_module
 import argparse
-
-from taskGraph import Task
-
-def loadTasks(fpath):
-  mod = import_module(fpath[:-3])
-  return [
-    Task(name, func)
-    for name, func in mod.__dict__.items()
-    if name.startswith('Task') and (callable(func) or type(func) == dict)
-  ]
+import hashlib
+import os
 
 def parseArgs():
   parser = argparse.ArgumentParser(
@@ -23,3 +14,14 @@ def parseArgs():
   #TODO: Docs
 
   return parser.parse_args()
+
+def hashFile(fpath):
+  #SEE: https://stackoverflow.com/a/3431838
+  if os.path.isdir(fpath): #TODO: Hash directories based on recursive hashes
+    return os.path.exists(fpath)
+
+  md5 = hashlib.md5()
+  with open(fpath, 'rb') as fin:
+    for chunk in iter(lambda: fin.read(1024 * 4), b''):
+      md5.update(chunk)
+  return md5.digest()

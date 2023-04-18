@@ -1,4 +1,9 @@
+from importlib import import_module
 import subprocess
+import os
+
+from cache import getCache, setCache
+from utils import hashFile
 
 class Task:
   def __init__(self, name, func):
@@ -14,9 +19,16 @@ class Task:
     self.outs = data.get('outs', [])
     self.capture = data.get('capture', 0)
     self.actions = data.get('actions')
+    
+    self.cache = getCache(self.name)
 
   def execute(self):
-    print('*', self.name)
+    skipRun = self.checkCache()
+    if skipRun:
+      print('-', self.name)
+      return
+    
+    print('+', self.name)
     for action in self.actions:
       if callable(action):
         action()
@@ -30,8 +42,34 @@ class Task:
       else:
         raise TypeError(f'\tWrong type of action ({type(action)}): {action}')
 
+    missingOuts = self.checkOuts()
+    if len(missingOuts) != 0:
+      raise Exception(f'\tNot all outs were created: {missingOuts}')
+    self.cacheOuts()
+
+  def checkCache(self):
+    return len(self.cache) != 0 and self.cache == self.calcCache()
+
+  def checkOuts(self):
+    return [
+      out
+      for out in self.outs
+      if type(out) == str and not os.path.exists(out)
+    ]
+
+  def cacheOuts(self):
+    self.cache = self.calcCache()
+    setCache(self.name, self.cache)
+
   #************************************************************
   #* Utils ****************************************************
+  def calcCache(self):
+    return {
+      out: hashFile(out) if os.path.exists(out) else ''
+      for out in self.outs
+      if type(out) == str
+    }
+
   def __repr__(self):
     name = self.name
     description = self.description
@@ -131,3 +169,11 @@ class TaskGraph:
       ):
         return task
     return None
+
+def loadTasks(fpath):
+  mod = import_module(fpath[:-3])
+  return [
+    Task(name, func)
+    for name, func in mod.__dict__.items()
+    if name.startswith('Task') and (callable(func) or type(func) == dict)
+  ]

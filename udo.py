@@ -1,4 +1,5 @@
 FPATH = '/tmp/test.touch'
+DPATH = '/tmp/testDir'
 
 def TaskTouch():
   return {
@@ -33,6 +34,13 @@ TaskMsg = {
   'capture': 1,
   'actions': [
     printMsg
+  ],
+}
+
+TaskDir = {
+  'outs': [DPATH],
+  'actions': [
+    f'mkdir {DPATH}'
   ],
 }
 
