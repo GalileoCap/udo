@@ -33,7 +33,7 @@ class Task:
       raise Exception(f'Task must have a name: {data}')
 
   def execute(self):
-    skipRun = self.checkCache()
+    skipRun = self.checkCache() or len(self.actions) == 0
     if skipRun:
       print('-', self.name)
       return
