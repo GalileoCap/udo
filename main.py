@@ -8,5 +8,5 @@ if __name__ == '__main__':
 
   graph = TaskGraph(tasks)
   graph.calcEdges()
-  if graph.check():
-    graph.execute() #TODO: use args.targets
+  graph.check()
+  graph.execute() #TODO: use args.targets

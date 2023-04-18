@@ -6,8 +6,7 @@ class Task:
 
     data = func() if callable(func) else func
     if type(data) != dict:
-      print('Wrong type:', type(data), data)
-      #TODO: Error
+      raise TypeError(f'Wrong type of task ({type(data)}): {data}')
 
     self.name = data.get('name', name)
     self.description = data.get('description', '')
@@ -29,7 +28,7 @@ class Task:
         )
         res.check_returncode()
       else:
-        print('ERROR')
+        raise TypeError(f'\tWrong type of action ({type(action)}): {action}')
 
   def __repr__(self):
     name = self.name
@@ -64,17 +63,14 @@ class TaskGraph:
   def check(self):
     emptyTasks = self.checkEmpty()
     if len(emptyTasks) != 0:
-      print('Empty tasks:', emptyTasks)
-      return False
+      raise Exception(f'Empty tasks: {emptyTasks}')
 
     multipleProducers = self.checkMultipleProducers()
     if len(multipleProducers) != 0:
-      print('Repeated tags:', multipleProducers)
-      return False
+      raise Exception(f'Repeated tags {multipleProducers}')
 
-    return not self.checkLoops()
-
-    return True
+    if self.checkLoops():
+      raise Exception('Loop found')
 
   def calcEdges(self):
     for task in self.tasks:
@@ -85,8 +81,7 @@ class TaskGraph:
       for dep in task.dependsOn:
         parent = self.getNodeByDep(dep)
         if parent is None:
-          print('none parent')
-          #TODO: Error
+          raise Exception(f'No task matches dependency: {dep}, for task: {task.name}')
 
         task.parents.append(parent)
         parent.children.append(task)
@@ -102,7 +97,7 @@ class TaskGraph:
     counts = {} #TODO: Rename
     for task in self.tasks:
       for tag in task.produces:
-        counts[tag] = counts.get(tag, []) + [task]
+        counts[tag] = counts.get(tag, []) + [task.name]
     return [(tag, count) for tag, count in counts.items() if len(count) > 1]
 
   def checkLoops(self):
