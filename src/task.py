@@ -7,7 +7,7 @@ from cache import getCache, setCache
 from utils import hashFile, printHelp, cleanTasks
 
 class Task:
-  def __init__(self, name, func, *, namePrefix = ''):
+  def __init__(self, name, func, *, namePrefix = '', isSubtask = False):
     self.func = func
 
     data = func() if callable(func) else func
@@ -20,11 +20,12 @@ class Task:
     self.outs = data.get('outs', [])
     self.capture = data.get('capture', 0)
     self.cache = getCache(self.name)
+    self.isSubtask = isSubtask
 
     self.actions = data.get('actions', [])
     self.subtasks = []
     for subfunc in data.get('subtasks', []):
-      subtask = Task('', subfunc, namePrefix = f'{self.name}:')
+      subtask = Task('', subfunc, namePrefix = f'{self.name}:', isSubtask = True)
       self.deps.append(subtask.func)
       self.subtasks.append(subtask)
 

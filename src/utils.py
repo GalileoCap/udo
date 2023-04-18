@@ -29,13 +29,15 @@ def hashFile(fpath):
   return md5.digest()
 
 def cleanTasks(tasks):
+  #TODO: Traverse graph to clean
   for task in tasks:
-    print(f'  * {task.name}')
+    if not task.isSubtask:
+      print(f'  * {task.name}')
     for out in task.outs:
-      print(f'    * {out}')
       if os.path.isdir(out): rmtree(out)
       elif os.path.isfile(out): os.remove(out)
 
 def printHelp(tasks):
   for task in tasks:
-    print(f'* {task.name}{":" if task.description != "" else ""} {task.description}')
+    if not task.isSubtask:
+      print(f'  * {task.name}{":" if task.description != "" else ""} {task.description}')
