@@ -54,9 +54,9 @@ class TaskGraph:
         node.execute()
 
   def check(self):
-    emptyTasks = self.checkEmpty()
-    if len(emptyTasks) != 0:
-      raise Exception(f'Empty tasks: {emptyTasks}')
+    # emptyTasks = self.checkEmpty()
+    # if len(emptyTasks) != 0:
+      # raise Exception(f'Empty tasks: {emptyTasks}')
 
     multipleProducers = self.checkMultipleProducers()
     if len(multipleProducers) != 0:

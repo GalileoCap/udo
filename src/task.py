@@ -7,21 +7,29 @@ from cache import getCache, setCache
 from utils import hashFile, printHelp, cleanTasks
 
 class Task:
-  def __init__(self, name, func):
+  def __init__(self, name, func, *, namePrefix = ''):
     self.func = func
 
     data = func() if callable(func) else func
     if type(data) != dict:
       raise TypeError(f'Wrong type of task ({type(data)}): {data}')
 
-    self.name = data.get('name', name.lstrip('Task'))
+    self.name = namePrefix + data.get('name', name.lstrip('Task'))
     self.description = data.get('description', '')
     self.deps = data.get('deps', [])
     self.outs = data.get('outs', [])
     self.capture = data.get('capture', 0)
-    self.actions = data.get('actions')
-    
     self.cache = getCache(self.name)
+
+    self.actions = data.get('actions', [])
+    self.subtasks = []
+    for subfunc in data.get('subtasks', []):
+      subtask = Task('', subfunc, namePrefix = f'{self.name}:')
+      self.deps.append(subtask.func)
+      self.subtasks.append(subtask)
+
+    if 'name' == '':
+      raise Exception(f'Task must have a name: {data}')
 
   def execute(self):
     skipRun = self.checkCache()
@@ -98,11 +106,13 @@ def loadModule(fpath):
 
 def loadTasks(fpath):
   mod = loadModule(fpath)
-  tasks = [
-    Task(name, func)
-    for name, func in mod.__dict__.items()
-    if name.startswith('Task') and (callable(func) or type(func) == dict)
-  ]
+
+  tasks = []
+  for name, func in mod.__dict__.items():
+    if name.startswith('Task') and (callable(func) or type(func) == dict):
+      task = Task(name, func)
+      tasks.append(task)
+      tasks.extend(task.subtasks)
 
   return tasks
 
