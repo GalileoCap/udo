@@ -24,8 +24,11 @@ TaskRemoveTouch = {
   ],
 }
 
+msgCount = 0
 def printMsg():
-  print('Ahoy my friend!')
+  global msgCount
+  msgCount += 1
+  print(f'Ahoy my friend!... For the {msgCount}st,nd,rd,th time')
 
 TaskMsg = {
   'name': 'Msg',
@@ -34,4 +37,23 @@ TaskMsg = {
   'actions': [
     printMsg
   ],
+}
+
+def TaskLoopA():
+  return {
+    'name': 'LoopA',
+    'dependsOn': [TaskLoopC],
+    'actions': [printMsg],
+  }
+
+TaskLoopB = {
+  'name': 'LoopB',
+  # 'dependsOn': [TaskLoopA],
+  'actions': [printMsg],
+}
+
+TaskLoopC = {
+  'name': 'LoopC',
+  'dependsOn': [TaskLoopB],
+  'actions': [printMsg],
 }
