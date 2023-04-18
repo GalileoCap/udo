@@ -20,5 +20,6 @@ class Task:
                          # or nothing (1)
     actions : list[str | callable] # List of bash commands or python functions
                                    # to be executed
+    subtasks : list[dict | callable] # List of subtasks
 ```
-Tasks may be functions that return a dictionary with it's attributes, or the dictionary itself (see [examples](https://github.com/GalileoCap/udo-src/tree/main/examples)).
+Tasks (and subtasks) may be functions that return a dictionary with it's attributes, or the dictionary itself (see [examples](https://github.com/GalileoCap/udo-src/tree/main/examples)).
