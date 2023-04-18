@@ -30,7 +30,9 @@ def hashFile(fpath):
 
 def cleanTasks(tasks):
   for task in tasks:
+    print(f'  * {task.name}')
     for out in task.outs:
+      print(f'    * {out}')
       if os.path.isdir(out): rmtree(out)
       elif os.path.isfile(out): os.remove(out)
 
