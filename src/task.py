@@ -57,7 +57,7 @@ class Task:
     self.cacheOuts()
 
   def checkCache(self):
-    return len(self.cache) != 0 and self.cache == self.calcCache()
+    return (len(self.cache.get('outs', [])) != 0 or len(self.cache.get('deps', [])) != 0) and self.cache == self.calcCache()
 
   def checkOuts(self):
     return [
