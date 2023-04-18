@@ -1,3 +1,5 @@
+from task import TaskClean, TaskHelp
+
 class TaskGraph:
   class Node:
     def __init__(self, task):
@@ -37,16 +39,19 @@ class TaskGraph:
       return self.__repr__()
 
   def __init__(self, tasks):
+    self.tasks = tasks
     self.nodes = [self.Node(task) for task in tasks]
 
   def execute(self, targets):
-    #TODO: Change to pseudo-dfs to make it easier to follow
-    leaves = self.getLeaves(targets)
+    if targets == ['clean']: TaskClean(self.tasks).execute()
+    elif targets == ['help']: TaskHelp(self.tasks).execute()
+    else:
+      leaves = self.getLeaves(targets)
 
-    for node in self.nodes:
-      node.visited = 0
-    for node in leaves:
-      node.execute()
+      for node in self.nodes:
+        node.visited = 0
+      for node in leaves:
+        node.execute()
 
   def check(self):
     emptyTasks = self.checkEmpty()

@@ -89,16 +89,6 @@ def loadTasks(fpath):
     if name.startswith('Task') and (callable(func) or type(func) == dict)
   ]
 
-  hasClean, hasHelp = False, False
-  for task in tasks:
-    hasClean |= task.name == 'clean'
-    hasHelp |= task.name == 'help'
-
-  if not hasClean:
-    tasks.append(TaskClean(tasks))
-  if not hasHelp:
-    tasks.append(TaskHelp(tasks))
-
   return tasks
 
 def TaskClean(tasks):
