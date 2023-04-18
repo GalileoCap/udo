@@ -2,24 +2,23 @@ FPATH = '/tmp/test.touch'
 
 def TaskTouch():
   return {
-    'name': 'Touch',
     'description': 'Creates the file',
 
-    'outs': [FPATH],
+    'outs': [FPATH], # This task creates these files
 
-    'capture': 1, # Show stdout
     'actions': [
       f'echo "Ahoy there!" > {FPATH}',
-      f'cat {FPATH}',
     ],
   }
 
-def TaskRemoveTouch():
+def TaskMessage():
   return {
-    'description': 'Deletes the file',
-    'deps': [FPATH],
+    'description': 'Prints the file',
+
+    'deps': [FPATH], # This task depends on these files
+    'capture': 1, # Show stdout
 
     'actions': [
-      f'rm {FPATH}',
+      f'cat {FPATH}',
     ],
   }

@@ -1,0 +1,8 @@
+baseURL: 'https://dev.galileocap.me/udo'
+languageCode: 'en-us'
+title: 'uDO'
+theme: 'hugo-book'
+
+params:
+  BookTheme: 'dark'
+  BookMenuBundle: '/menu'
