@@ -7,7 +7,6 @@ headless: true
 
 * [**API**]({{< relref "/api" >}})
   * [Task]({{< relref "/api#task" >}})
-    <!-- TODO: Task parts -->
   * [Execution]({{< relref "/api#execution" >}})
 
 <br />
