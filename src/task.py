@@ -128,6 +128,7 @@ def loadTasks(fpath):
 def TaskClean(tasks):
   return Task('clean', {
     'description': 'Removes all outs created by other tasks that have the "clean" attribute set as True',
+    'capture': 1,
     'actions': [lambda: cleanTasks(tasks)],
   })
 

@@ -16,7 +16,7 @@ class Task:
     deps : list[str | Task] # List of files, directories, or other task
                             # constructors this task depends on 
     outs : list[str] # List of files or directories this task creates
-    clean : bool = True # Should outs be removed on 'udo clean'
+    clean : bool | callable = True # Should outs be removed on 'udo clean', if it's a callable then that function handles the cleaning
     capture = -1 | 0 | 1 # Capture stderr and stdout (-1), only stdout (0),
                          # or nothing (1)
     actions : list[str | callable] # List of bash commands or python functions
