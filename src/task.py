@@ -19,6 +19,7 @@ class Task:
     self.deps = data.get('deps', [])
     self.outs = data.get('outs', [])
     self.clean = data.get('clean', True)
+    self.skipRun = data.get('skipRun', self.checkCache)
     self.capture = data.get('capture', 0)
     self.cache = getCache(self.name)
     self.isSubtask = isSubtask
@@ -34,8 +35,7 @@ class Task:
       raise Exception(f'Task must have a name: {data}')
 
   def execute(self):
-    skipRun = self.checkCache() or len(self.actions) == 0
-    if skipRun:
+    if self.shouldSkipRun():
       print('-', self.name)
       return
     
@@ -58,8 +58,15 @@ class Task:
       raise Exception(f'\tNot all outs were created: {missingOuts}')
     self.cacheOuts()
 
+  def shouldSkipRun(self):
+    skipRun = self.skipRun() if callable(self.skipRun) else self.skipRun
+    return skipRun or len(self.actions) == 0
+
   def checkCache(self):
-    return (len(self.cache.get('outs', [])) != 0 or len(self.cache.get('deps', [])) != 0) and self.cache == self.calcCache()
+    cacheOuts = self.cache.get('outs', [])
+    cacheDeps = self.cache.get('deps', [])
+    hasCache = len(cacheOuts) != 0 or len(cacheDeps) != 0
+    return hasCache and self.cache == self.calcCache()
 
   def checkOuts(self):
     return [
