@@ -5,9 +5,6 @@ title: "uDO API"
 
 # API
 
-## Execution
-<!-- TODO: Explain execution -->
-
 ## Task
 ```py
 class Task:
@@ -24,3 +21,10 @@ class Task:
     subtasks : list[dict | callable] # List of subtasks
 ```
 Tasks (and subtasks) may be functions that return a dictionary with it's attributes, or the dictionary itself (see [examples](https://github.com/GalileoCap/udo-src/tree/main/examples)).
+
+## Execution
+When you execute **uDO**, the program loads all the described tasks and then executes them in such an order that all dependencies are met.
+
+<!-- TODO: Graph -->
+<!-- TODO: TaskGraph design -->
+
