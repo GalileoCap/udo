@@ -1,3 +1,5 @@
+from importlib import import_module
+import importlib.util
 import argparse
 import hashlib
 from shutil import rmtree
@@ -16,6 +18,14 @@ def parseArgs():
   #TODO: Docs
 
   return parser.parse_args()
+
+def loadModule(fpath):
+  # SEE: https://stackoverflow.com/a/67692
+  modName = fpath[:-3]
+  spec = importlib.util.spec_from_file_location(modName, os.path.join(os.getcwd(), fpath))
+  mod = importlib.util.module_from_spec(spec)
+  spec.loader.exec_module(mod)
+  return mod
 
 def hashFile(fpath):
   #SEE: https://stackoverflow.com/a/3431838

@@ -1,14 +1,15 @@
 from taskGraph import TaskGraph
 from task import loadTasks
 from cache import loadCache, saveCache
-from utils import parseArgs
+from utils import parseArgs, loadModule
 
 if __name__ == '__main__':
   args = parseArgs()
 
   loadCache(args.cachePath)
 
-  tasks = loadTasks(args.file)
+  mod = loadModule(args.file)
+  tasks = loadTasks(mod)
 
   graph = TaskGraph(tasks)
   graph.calcEdges()
