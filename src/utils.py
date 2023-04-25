@@ -5,17 +5,30 @@ import hashlib
 from shutil import rmtree
 import os
 
+dfltFile = './udo.py'
+dfltCache = './.udo.db'
+
 def parseArgs():
   parser = argparse.ArgumentParser(
     prog = 'udo',
-    description = 'Task executer', #TODO: Better description
-    #TODO: Other parameters
+    # description = 'Task executer', #TODO: Better description
+    epilog = 'Made by Galileo Cappella\nVisit https://dev.galileocap.me/udo',
+
+    formatter_class = argparse.RawTextHelpFormatter,
   )
 
-  parser.add_argument('targets', nargs = '*', default = '')
-  parser.add_argument('-f', '--file', default = 'udo.py')
-  parser.add_argument('--cachePath', default = '.udo.db')
-  #TODO: Docs
+  parser.add_argument(
+    'targets', nargs = '*', default = '',
+    help = 'Comma separated list of targets to be executed. Defaults to all if empty.\nUse target "help" to list possible targets.'
+  )
+  parser.add_argument(
+    '--file', default = dfltFile,
+    help = f'Path to the file describing the tasks (default: "{dfltFile}")',
+  )
+  parser.add_argument(
+    '--cache', default = dfltCache,
+    help = f'Path to the file where the cache is stored and read (default: "{dfltCache}")',
+  )
 
   return parser.parse_args()
 

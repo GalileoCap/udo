@@ -6,7 +6,7 @@ from utils import parseArgs, loadModule
 if __name__ == '__main__':
   args = parseArgs()
 
-  loadCache(args.cachePath)
+  loadCache(args.cache)
 
   mod = loadModule(args.file)
   tasks = loadTasks(mod)
@@ -16,4 +16,4 @@ if __name__ == '__main__':
   graph.check()
   graph.execute(args.targets)
 
-  saveCache(args.cachePath)
+  saveCache(args.cache)
