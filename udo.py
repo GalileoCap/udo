@@ -1,6 +1,6 @@
 import os
 
-def Build():
+def TaskBuild():
   return {
     'name': 'build',
     'description': 'Compiles the executable',
@@ -12,7 +12,7 @@ def Build():
     ],
   }
 
-def Install():
+def Tasknstall():
   opath = os.path.expanduser('~/bin/udo')
 
   return {
@@ -25,11 +25,6 @@ def Install():
     'actions': [
       f'cp ./build/dist/udo {opath}', 
     ],
-  }
-
-def TaskBuildAndInstall():
-  return {
-    'subtasks': [Build, Install],
   }
 
 #TODO: TaskTest
