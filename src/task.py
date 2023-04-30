@@ -32,7 +32,7 @@ class Task:
     if 'name' == '':
       raise Exception(f'Task must have a name: {data}')
 
-  def execute(self, force):
+  def execute(self, force = False):
     if not force and self.shouldSkipRun():
       print('-', self.name)
       return

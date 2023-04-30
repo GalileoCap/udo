@@ -7,7 +7,7 @@ class TaskGraph:
       self.parents = []
       self.children = []
 
-    def execute(self, force):
+    def execute(self, force = False):
       if self.visited:
         return
         
@@ -45,8 +45,8 @@ class TaskGraph:
     self.nodes = [self.Node(task) for task in tasks]
 
   def execute(self, targets, force = False):
-    if targets == ['clean']: TaskClean(self.tasks).execute()
-    elif targets == ['help']: TaskHelp(self.tasks).execute()
+    if targets == ['clean']: TaskClean(self.tasks).execute(force)
+    elif targets == ['help']: TaskHelp(self.tasks).execute(force)
     else:
       leaves = self.getLeaves(targets)
 
