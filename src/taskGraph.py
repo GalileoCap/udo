@@ -7,12 +7,12 @@ class TaskGraph:
       self.parents = []
       self.children = []
 
-    def execute(self):
+    def execute(self, force = False):
       for parent in self.parents:
         parent.visited += 1
         if parent.visited == 1:
-          parent.execute()
-      self.task.execute()
+          parent.execute(force)
+      self.task.execute(force)
 
     def getRoots(self):
       if len(self.parents) == 0:
@@ -42,7 +42,7 @@ class TaskGraph:
     self.tasks = tasks
     self.nodes = [self.Node(task) for task in tasks]
 
-  def execute(self, targets):
+  def execute(self, targets, force = False):
     if targets == ['clean']: TaskClean(self.tasks).execute()
     elif targets == ['help']: TaskHelp(self.tasks).execute()
     else:
@@ -51,7 +51,7 @@ class TaskGraph:
       for node in self.nodes:
         node.visited = 0
       for node in leaves:
-        node.execute()
+        node.execute(force)
 
   def check(self):
     # emptyTasks = self.checkEmpty()

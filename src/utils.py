@@ -7,6 +7,7 @@ import os
 
 dfltFile = './udo.py'
 dfltCache = './.udo.db'
+dfltForce = False
 
 def parseArgs():
   parser = argparse.ArgumentParser(
@@ -28,6 +29,10 @@ def parseArgs():
   parser.add_argument(
     '--cache', default = dfltCache,
     help = f'Path to the file where the cache is stored and read (default: "{dfltCache}")',
+  )
+  parser.add_argument(
+    '--force', default = dfltForce, action = 'store_true',
+    help = f'Forces the execution of the targets ignoring skip checks (default: {dfltForce})',
   )
 
   return parser.parse_args()
