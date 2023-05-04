@@ -8,6 +8,7 @@ import os
 dfltFile = './udo.py'
 dfltCache = './.udo.db'
 dfltForce = False
+dfltInit = False
 
 def parseArgs():
   parser = argparse.ArgumentParser(
@@ -33,6 +34,10 @@ def parseArgs():
   parser.add_argument(
     '--force', default = dfltForce, action = 'store_true',
     help = f'Forces the execution of the targets ignoring skip checks (default: {dfltForce})',
+  )
+  parser.add_argument(
+    '--init', default = dfltInit, action = 'store_true',
+    help = f'Creates a basic configuration file (uses --file) (default: {dfltInit})',
   )
 
   return parser.parse_args()

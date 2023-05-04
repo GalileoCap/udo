@@ -18,6 +18,12 @@ You can download the latest binary from the [releases](https://github.com/Galile
 
 ## [**Quick Start**]({{< relref "/quick-start" >}})
 
+### Quickest Start
+Simply run
+```bash
+udo --init
+```
+
 ## [**API**]({{< relref "/api" >}})
 
 <!-- TODO: Features list -->
