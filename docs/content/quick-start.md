@@ -11,6 +11,10 @@ Download binary from the [releases](https://github.com/GalileoCap/udo-src/releas
 ## Create a basic task
 In `udo.py`
 ```py
+UDOConfig = {
+  'version': '1.3.0',
+}
+
 FPATH = '/tmp/test.touch'
 
 def TaskTouch():

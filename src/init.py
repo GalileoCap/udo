@@ -1,5 +1,13 @@
+from utils import currVersion
+
 def initFile():
   s = '# Default uDO file\n'
+
+  s += '''
+UDOConfig = {
+  'version': ''' + f"'{currVersion}'" + '''
+}
+'''
 
   s += '''
 def TaskMain():
