@@ -26,8 +26,8 @@ def parseArgs():
   )
 
   parser.add_argument(
-    'targets', nargs = '*', default = '',
-    help = 'Comma separated list of targets to be executed. Defaults to all if empty.\nUse target "help" to list possible targets.'
+    'targets', nargs = '*', default = [],
+    help = 'List of targets to be executed. Defaults to all if empty.\nUse target "help" to list possible targets.'
   )
   parser.add_argument(
     '--file', default = dfltFile,
