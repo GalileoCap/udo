@@ -2,6 +2,7 @@ import subprocess
 import os
 
 from cache import getCache, setCache
+from config import config
 from utils import hashFile, printHelp, cleanTasks
 
 class Task:
@@ -107,7 +108,7 @@ class Task:
 def loadTasks(mod):
   tasks = []
   for name, func in mod.__dict__.items():
-    if name.startswith('Task') and (callable(func) or type(func) == dict):
+    if name.startswith(config['prefix']) and (callable(func) or type(func) == dict):
       task = Task(name, func)
       tasks.append(task)
       tasks.extend(task.subtasks)

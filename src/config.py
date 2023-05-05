@@ -1,8 +1,9 @@
-from utils import currVersion, dfltCache
+from utils import currVersion, dfltCache, dfltPrefix
 
 config = {
   'version': currVersion,
   'cache': dfltCache,
+  'prefix': dfltPrefix,
 }
 
 def loadConfig(mod, args):
@@ -14,6 +15,8 @@ def loadConfig(mod, args):
   # Prioritize arguments
   if args.cache is not None:
     config['cache'] = args.cache
+  if args.prefix is not None:
+    config['prefix'] = args.prefix
 
 def checkVersion():
   # TODO: Check config['version'] is correct type and lenght

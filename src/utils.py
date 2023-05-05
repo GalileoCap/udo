@@ -9,6 +9,7 @@ currVersion = (1, 3, 0)
 
 dfltFile = './udo.py'
 dfltCache = './.udo.db'
+dfltPrefix = 'Task'
 dfltForce = False
 dfltInit = False
 
@@ -34,6 +35,10 @@ def parseArgs():
   parser.add_argument(
     '--cache', default = None,
     help = f'Path to the file where the cache is stored and read (default: "{dfltCache}")',
+  )
+  parser.add_argument(
+    '--prefix', default = None,
+    help = f'Prefix used to look for tasks (default: "{dfltPrefix}")',
   )
   parser.add_argument(
     '--force', default = dfltForce, action = 'store_true',
