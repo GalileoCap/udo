@@ -21,3 +21,4 @@ def getCache(name):
 def setCache(name, cache):
   if len(cache) != 0:
     Cache[name] = cache
+    saveCache()
