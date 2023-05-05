@@ -32,7 +32,7 @@ def parseArgs():
     help = f'Path to the file describing the tasks (default: "{dfltFile}")',
   )
   parser.add_argument(
-    '--cache', default = dfltCache,
+    '--cache', default = None,
     help = f'Path to the file where the cache is stored and read (default: "{dfltCache}")',
   )
   parser.add_argument(

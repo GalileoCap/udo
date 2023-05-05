@@ -1,18 +1,21 @@
 import pickle
 import os
 
+from config import config
+
 Cache = {}
 
-def loadCache(fpath = '.udo.db'):
+def loadCache():
   global Cache
 
+  fpath = config['cache']
   if os.path.exists(fpath):
     with open(fpath, 'rb') as fin:
       Cache = pickle.load(fin)
   else: Cache = {}
 
-def saveCache(fpath = '.udo.db'):
-  with open(fpath, 'wb') as fin:
+def saveCache():
+  with open(config['cache'], 'wb') as fin:
     pickle.dump(Cache, fin, protocol = pickle.HIGHEST_PROTOCOL)
 
 def getCache(name):

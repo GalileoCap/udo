@@ -15,13 +15,13 @@ if __name__ == '__main__':
 
   mod = loadModule(args.file)
 
-  loadConfig(mod)
+  loadConfig(mod, args)
   major, minor, patch = checkVersion()
   if not major:
     print('ERROR: Different major version')
     sys.exit(1)
 
-  loadCache(args.cache)
+  loadCache()
 
   tasks = loadTasks(mod)
 
@@ -30,4 +30,4 @@ if __name__ == '__main__':
   graph.check()
   graph.execute(args.targets, force = args.force)
 
-  saveCache(args.cache)
+  saveCache()
