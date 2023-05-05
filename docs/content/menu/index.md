@@ -12,8 +12,9 @@ headless: true
 * [**API**]({{< relref "/api" >}})
   * [Task]({{< relref "/api#task" >}})
   * [Execution]({{< relref "/api#execution" >}})
+  * [Config]({{< relref "/api#config" >}})
 
 <br />
 
-* [**GitHub**](https://github.com/GalileoCap/udo-src)
+* [**GitHub**](https://github.com/GalileoCap/udo)
 * [**Blog**]({{< relref "/posts" >}})

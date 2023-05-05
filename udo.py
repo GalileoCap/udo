@@ -16,7 +16,7 @@ def TaskBuild():
     ],
   }
 
-def Tasknstall():
+def TaskInstall():
   opath = os.path.expanduser('~/bin/udo')
 
   return {
@@ -28,6 +28,20 @@ def Tasknstall():
 
     'actions': [
       f'cp ./build/dist/udo {opath}', 
+    ],
+  }
+
+def TaskPublish():
+  return {
+    'name': 'publish',
+    'description': 'Publish site',
+    'deps': ['./docs/content/_index.md', './docs/content/api.md', './docs/content/examples/basic.md', './docs/content/menu/index.md', './docs/content/posts/_index.md', './docs/content/quick-start.md'],
+    'skipRun': True, # TODO: Check git branch is main
+
+    'actions': [
+      'hugo -s docs --minify',
+      'git add docs && git commit -m "Deploy site"', # TODO: Get last commit
+      'git subtree push --prefix docs/public origin gh-pages', # SEE: https://gist.github.com/cobyism/4730490
     ],
   }
 

@@ -9,11 +9,17 @@ Great for [compiling large projects](https://github.com/GalileoCap/uOS), and aut
 <!-- TODO: AUR, ... -->
 
 ### Binary
-You can download the latest binary from the [releases](https://github.com/GalileoCap/udo-src/releases/latest).  
+You can download the latest binary from the [releases](https://github.com/GalileoCap/udo/releases/latest).  
 
 ## [Docs](https://dev.galileocap.me/udo/)
 
 ### [**Quick Start**](https://dev.galileocap.me/udo/quick-start/)
+
+### Quickest Start
+Simply run
+```bash
+udo --init
+```
 
 ### [**API**](https://dev.galileocap.me/udo/api/)
 
