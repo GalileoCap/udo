@@ -69,3 +69,13 @@ It also caches the files described in each task's deps and outs, so that tasks w
 <!-- TODO: Graph -->
 <!-- TODO: TaskGraph design -->
 
+## Config
+Some of the arguments can be also saved in the `udo.py` file under a dictionary:
+```py
+UDOConfig = {
+  'version': (1, 3, 0), # Used to check compatibility
+  'cache': './.udo.db',
+  'prefix': 'Task',
+}
+```
+**WARNING:** Don't use this variable or it's name for anything else.
