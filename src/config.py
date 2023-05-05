@@ -21,7 +21,7 @@ def loadConfig(mod, args):
     config['prefix'] = args.prefix
   if len(args.force) != 0:
     config['force'] = args.force.split(',')
-    print(config['force'], args.force)
+    args.targets.extend(config['force'])
   if args.forceAll is not None:
     config['forceAll'] = args.forceAll
 
