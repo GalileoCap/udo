@@ -15,6 +15,12 @@ You can download the latest binary from the [releases](https://github.com/Galile
 
 ### [**Quick Start**](https://dev.galileocap.me/udo/quick-start/)
 
+### Quickest Start
+Simply run
+```bash
+udo --init
+```
+
 ### [**API**](https://dev.galileocap.me/udo/api/)
 
 <!-- TODO: Features list -->

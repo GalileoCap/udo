@@ -41,7 +41,7 @@ def TaskPublish():
     'actions': [
       'hugo -s docs --minify',
       'git add docs && git commit -m "Deploy site"', # TODO: Get last commit
-      'git subtree push --prefix docs/public origin gh-pages',
+      'git subtree push --prefix docs/public origin gh-pages', # SEE: https://gist.github.com/cobyism/4730490
     ],
   }
 
