@@ -6,7 +6,7 @@ title: "Quick Start"
 # Quick Start
 
 ## Install
-Download binary from the [releases](https://github.com/GalileoCap/udo-src/releases/latest).  
+Download binary from the [releases](https://github.com/GalileoCap/udo/releases/latest).  
 
 ## Create a basic task
 In `udo.py`

@@ -16,5 +16,5 @@ headless: true
 
 <br />
 
-* [**GitHub**](https://github.com/GalileoCap/udo-src)
+* [**GitHub**](https://github.com/GalileoCap/udo)
 * [**Blog**]({{< relref "/posts" >}})

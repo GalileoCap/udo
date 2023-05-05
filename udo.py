@@ -16,7 +16,7 @@ def TaskBuild():
     ],
   }
 
-def Tasknstall():
+def TaskInstall():
   opath = os.path.expanduser('~/bin/udo')
 
   return {
@@ -28,6 +28,18 @@ def Tasknstall():
 
     'actions': [
       f'cp ./build/dist/udo {opath}', 
+    ],
+  }
+
+def TaskPublish():
+  return {
+    'name': 'publish',
+    'description': 'Publish site',
+    'skipRun': True, # TODO: Check git branch is main
+
+    'actions': [
+      'hugo -s docs --minify',
+      'git subtree push --prefix ./docs/public origin gh-pages',
     ],
   }
 

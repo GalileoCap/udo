@@ -14,7 +14,7 @@ Great for [compiling large projects](https://github.com/GalileoCap/uOS), and aut
 <!-- TODO: AUR, ... -->
 
 ### Binary
-You can download the latest binary from the [releases](https://github.com/GalileoCap/udo-src/releases/latest).  
+You can download the latest binary from the [releases](https://github.com/GalileoCap/udo/releases/latest).  
 
 ## [**Quick Start**]({{< relref "/quick-start" >}})
 
