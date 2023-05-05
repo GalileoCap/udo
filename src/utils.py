@@ -10,7 +10,8 @@ currVersion = (1, 3, 0)
 dfltFile = './udo.py'
 dfltCache = './.udo.db'
 dfltPrefix = 'Task'
-dfltForce = False
+dfltForce = ''
+dfltForceAll = False
 dfltInit = False
 
 def parseArgs():
@@ -41,8 +42,12 @@ def parseArgs():
     help = f'Prefix used to look for tasks (default: "{dfltPrefix}")',
   )
   parser.add_argument(
-    '--force', default = dfltForce, action = 'store_true',
-    help = f'Forces the execution of the targets ignoring skip checks (default: {dfltForce})',
+    '--force', default = dfltForce,
+    help = f'Comma separated list (no spaces) of tasks to force their execution, skipping checks (default: {dfltForce})',
+  )
+  parser.add_argument(
+    '--forceAll', default = None, action = 'store_true',
+    help = f'Force the execution of all targets (default: {dfltForceAll})',
   )
   parser.add_argument(
     '--init', default = dfltInit, action = 'store_true',

@@ -1,9 +1,11 @@
-from utils import currVersion, dfltCache, dfltPrefix
+from utils import currVersion, dfltCache, dfltPrefix, dfltForceAll
 
 config = {
   'version': currVersion,
   'cache': dfltCache,
   'prefix': dfltPrefix,
+  'force': [],
+  'forceAll': dfltForceAll,
 }
 
 def loadConfig(mod, args):
@@ -17,6 +19,11 @@ def loadConfig(mod, args):
     config['cache'] = args.cache
   if args.prefix is not None:
     config['prefix'] = args.prefix
+  if len(args.force) != 0:
+    config['force'] = args.force.split(',')
+    print(config['force'], args.force)
+  if args.forceAll is not None:
+    config['forceAll'] = args.forceAll
 
 def checkVersion():
   # TODO: Check config['version'] is correct type and lenght
