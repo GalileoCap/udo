@@ -5,7 +5,7 @@ import hashlib
 from shutil import rmtree
 import os
 
-currVersion = '1.3.0'
+currVersion = (1, 3, 0)
 
 dfltFile = './udo.py'
 dfltCache = './.udo.db'
@@ -13,9 +13,11 @@ dfltForce = False
 dfltInit = False
 
 def parseArgs():
+  major, minor, patch = currVersion
+
   parser = argparse.ArgumentParser(
     prog = f'udo',
-    description = f'Version: {currVersion}', #TODO: Better description
+    description = f'v{major}.{minor}.{patch}', #TODO: Better description
     epilog = 'Made by Galileo Cappella\nVisit https://dev.galileocap.me/udo',
 
     formatter_class = argparse.RawTextHelpFormatter,

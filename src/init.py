@@ -1,11 +1,13 @@
 from utils import currVersion
 
 def initFile():
+  major, minor, patch = currVersion
+
   s = '# Default uDO file\n'
 
   s += '''
 UDOConfig = {
-  'version': ''' + f"'{currVersion}'" + '''
+  'version': ''' + f'({major}, {minor}, {patch})' + '''
 }
 '''
 

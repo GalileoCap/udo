@@ -1,5 +1,9 @@
 import os
 
+UDOConfig = {
+  'version': (1, 3, 0),
+}
+
 def TaskBuild():
   return {
     'name': 'build',

@@ -1,7 +1,10 @@
+import sys
+
 from taskGraph import TaskGraph
 from task import loadTasks
 from cache import loadCache, saveCache
 from init import doInit
+from config import loadConfig, checkVersion
 from utils import parseArgs, loadModule
 
 if __name__ == '__main__':
@@ -10,9 +13,16 @@ if __name__ == '__main__':
   if args.init:
     doInit(args.file)
 
+  mod = loadModule(args.file)
+
+  loadConfig(mod)
+  major, minor, patch = checkVersion()
+  if not major:
+    print('ERROR: Different major version')
+    sys.exit(1)
+
   loadCache(args.cache)
 
-  mod = loadModule(args.file)
   tasks = loadTasks(mod)
 
   graph = TaskGraph(tasks)
