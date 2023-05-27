@@ -28,6 +28,10 @@ if __name__ == '__main__':
   graph = TaskGraph(tasks)
   graph.calcEdges()
   graph.check()
-  graph.execute(args.targets)
+  
+  try:
+    graph.execute(args.targets)
+  except:
+    pass
 
   saveCache()

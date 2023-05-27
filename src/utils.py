@@ -5,7 +5,7 @@ import hashlib
 from shutil import rmtree
 import os
 
-currVersion = (1, 3, 0)
+currVersion = (1, 3, 1)
 
 dfltFile = './udo.py'
 dfltCache = './.udo.db'
