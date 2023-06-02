@@ -1,3 +1,6 @@
+import os
+
+from config import config
 from utils import currVersion
 
 def initFile():
@@ -36,6 +39,10 @@ def TaskShamelessPlug():
 
 def doInit(filePath):
   print(f'Creating default configuration at: {filePath}')
-
   with open(filePath, 'w') as fout:
     fout.write(initFile())
+
+  if os.path.isfile('.gitignore'):
+    print(f'.gitignore found, appending {config["cache"]}')
+    with open('.gitignore', 'a') as fout:
+      fout.write(f'\n{config["cache"]}\n')
