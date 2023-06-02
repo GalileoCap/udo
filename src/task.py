@@ -1,5 +1,6 @@
 import subprocess
 import os
+import inspect
 
 from cache import getCache, setCache
 from config import config
@@ -69,7 +70,8 @@ class Task:
   def checkCache(self):
     cacheOuts = self.cache.get('outs', [])
     cacheDeps = self.cache.get('deps', [])
-    hasCache = len(cacheOuts) != 0 or len(cacheDeps) != 0
+    cacheActions = self.cache.get('actions', [])
+    hasCache = len(cacheOuts) != 0 or len(cacheDeps) != 0 or len(cacheActions) != 0
     return hasCache and self.cache == self.calcCache()
 
   def checkOuts(self):
@@ -97,6 +99,10 @@ class Task:
         for out in self.outs
         if type(out) == str
       },
+      'actions': [
+        inspect.getsource(action) if callable(action) else action
+        for action in self.actions
+      ],
     }
 
   def __repr__(self):
