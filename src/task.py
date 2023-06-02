@@ -37,7 +37,7 @@ class Task:
   def execute(self):
     if not (self.name in config['force'] or config['forceAll']) and self.shouldSkipRun():
       print('-', self.name)
-      return
+      return self.retCode == 0
     
     print('+', self.name)
     for action in self.actions:
