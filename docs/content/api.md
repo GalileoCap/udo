@@ -65,6 +65,7 @@ When you execute **uDO**, the program loads all the described tasks and then exe
 It also caches the files described in each task's deps and outs, so that tasks will be skipped if both:
 * The dependencies haven't changed
 * The outputs still exists
+* The actions haven't changed
 
 <!-- TODO: Graph -->
 <!-- TODO: TaskGraph design -->
@@ -73,7 +74,7 @@ It also caches the files described in each task's deps and outs, so that tasks w
 Some of the arguments can be also saved in the `udo.py` file under a dictionary:
 ```py
 UDOConfig = {
-  'version': (1, 3, 0), # Used to check compatibility
+  'version': (1, 4, 0), # Used to check compatibility
   'cache': './.udo.db',
   'prefix': 'Task',
 }
