@@ -20,9 +20,9 @@ class TaskGraph:
           break
       else:
         self.success = self.task.execute()
+        if not self.success:
+          print(f'== uDO: "{self.task.name}" encountered an error, return code: {self.task.retCode} ==', file = sys.stderr)
 
-      if not self.success:
-        print(f'== uDO: "{self.task.name}" encountered an error, return code: {self.task.retCode} ==', file = sys.stderr)
       return self.success
 
     def getRoots(self):
