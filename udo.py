@@ -17,7 +17,7 @@ def TaskBuild():
   }
 
 def TaskInstall():
-  opath = os.path.expanduser('~/bin/udo')
+  opath = os.path.expanduser('/usr/local/bin')
 
   return {
     'name': 'install',
@@ -27,7 +27,7 @@ def TaskInstall():
     'clean': False,
 
     'actions': [
-      f'cp ./build/dist/udo {opath}', 
+      f'sudo cp ./build/dist/udo {opath}', 
     ],
   }
 
