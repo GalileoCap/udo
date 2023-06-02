@@ -22,6 +22,7 @@ class Task:
     self.capture = data.get('capture', 0)
     self.cache = getCache(self.name)
     self.isSubtask = isSubtask
+    self.retCode = 0
 
     self.actions = data.get('actions', [])
     self.subtasks = []
@@ -49,7 +50,8 @@ class Task:
           stderr = subprocess.PIPE if self.capture < 0 else None,
         )
 
-        if res.returncode != 0:
+        self.retCode = res.returncode
+        if self.retCode != 0:
           return False
       else:
         raise TypeError(f'\tWrong type of action ({type(action)}): {action}')

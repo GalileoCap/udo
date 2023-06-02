@@ -1,3 +1,4 @@
+import sys
 import subprocess
 from task import TaskClean, TaskHelp
 
@@ -16,10 +17,12 @@ class TaskGraph:
       self.visited = True
       for parent in self.parents:
         if not parent.execute():
-          self.success = False
-          return self.success
+          break
+      else:
+        self.success = self.task.execute()
 
-      self.success = self.task.execute()
+      if not self.success:
+        print(f'== uDO: "{self.task.name}" encountered an error, return code: {self.task.retCode} ==', file = sys.stderr)
       return self.success
 
     def getRoots(self):
