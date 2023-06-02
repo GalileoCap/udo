@@ -29,9 +29,6 @@ if __name__ == '__main__':
   graph.calcEdges()
   graph.check()
   
-  try:
-    graph.execute(args.targets)
-  except:
-    pass
+  graph.execute(args.targets)
 
   saveCache()

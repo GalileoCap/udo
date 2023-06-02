@@ -1,3 +1,4 @@
+import subprocess
 from task import TaskClean, TaskHelp
 
 class TaskGraph:
@@ -6,15 +7,20 @@ class TaskGraph:
       self.task = task
       self.parents = []
       self.children = []
+      self.success = False
 
     def execute(self):
       if self.visited:
-        return
+        return self.success
         
       self.visited = True
       for parent in self.parents:
-        parent.execute()
-      self.task.execute()
+        if not parent.execute():
+          self.success = False
+          return self.success
+
+      self.success = self.task.execute()
+      return self.success
 
     def getRoots(self):
       if len(self.parents) == 0:

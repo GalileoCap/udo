@@ -48,7 +48,9 @@ class Task:
           stdout = subprocess.PIPE if self.capture < 1 else None,
           stderr = subprocess.PIPE if self.capture < 0 else None,
         )
-        res.check_returncode()
+
+        if res.returncode != 0:
+          return False
       else:
         raise TypeError(f'\tWrong type of action ({type(action)}): {action}')
 
@@ -56,6 +58,7 @@ class Task:
     if len(missingOuts) != 0:
       raise Exception(f'\tNot all outs were created: {missingOuts}')
     self.cacheOuts()
+    return True
 
   def shouldSkipRun(self):
     skipRun = self.skipRun() if callable(self.skipRun) else self.skipRun
