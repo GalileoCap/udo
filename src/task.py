@@ -87,23 +87,33 @@ class Task:
 
   #************************************************************
   #* Utils ****************************************************
+
   def calcCache(self):
     return {
-      'deps': {
-        dep: hashFile(dep) if os.path.exists(dep) else ''
-        for dep in self.deps 
-        if type(dep) == str
-      },
-      'outs': {
-        out: hashFile(out) if os.path.exists(out) else ''
-        for out in self.outs
-        if type(out) == str
-      },
-      'actions': [
-        inspect.getsource(action) if callable(action) else action
-        for action in self.actions
-      ],
+      'deps': self.calcCacheDeps(),
+      'outs': self.calcCacheOuts(),
+      'actions': self.calcCacheActions(),
     }
+
+  def calcCacheDeps(self): 
+    return {
+      dep: hashFile(dep) if os.path.exists(dep) else ''
+      for dep in self.deps 
+      if type(dep) == str
+    }
+
+  def calcCacheOuts(self):
+    return {
+      out: hashFile(out) if os.path.exists(out) else ''
+      for out in self.outs
+      if type(out) == str
+    }
+
+  def calcCacheActions(self):
+    return [
+      inspect.getsource(action) if callable(action) else action
+      for action in self.actions
+    ]
 
   def __repr__(self):
     name = self.name
@@ -116,6 +126,18 @@ class Task:
   def __str__(self):
     return self.__repr__()
 
+class InternalTask(Task) :
+  def __init__(self, name, func, *, namePrefix = '', isSubtask = False):
+    super().__init__(name, func, namePrefix = namePrefix, isSubtask = isSubtask)
+
+  def calcCacheActions(self):
+    # NOTE: Fixes not being able to inspect.getsource on functions defined in this module
+    return [
+      action
+      for action in self.actions
+      if not callable(action) # TODO: What to do with callables?
+    ]
+
 def loadTasks(mod):
   tasks = []
   for name, func in mod.__dict__.items():
@@ -127,14 +149,16 @@ def loadTasks(mod):
   return tasks
 
 def TaskClean(tasks):
-  return Task('clean', {
+  return InternalTask('clean', {
     'description': 'Removes all outs created by other tasks that have the "clean" attribute set as True',
+    'skipRun': False,
     'capture': 1,
     'actions': [lambda: cleanTasks(tasks)],
   })
 
 def TaskHelp(tasks):
-  return Task('help', {
+  return InternalTask('help', {
     'description': 'Prints this message',
+    'skipRun': False,
     'actions': [lambda: printHelp(tasks)],
   })
