@@ -74,8 +74,3 @@ def hashFile(fpath):
     for chunk in iter(lambda: fin.read(1024 * 4), b''):
       md5.update(chunk)
   return md5.digest()
-
-def printHelp(tasks):
-  for task in tasks:
-    if not task.isSubtask:
-      print(f'  * {task.name}{":" if task.description != "" else ""} {task.description}')

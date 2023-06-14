@@ -1,6 +1,5 @@
 import sys
 import subprocess
-from task import TaskHelp
 
 class TaskGraph:
   class Node:
@@ -55,13 +54,13 @@ class TaskGraph:
 
   def execute(self, targets):
     mode = 'exec'
-    if targets == ['clean'] and self.getNodeByName('clean') is None:
+    if targets == ['help'] and self.getNodeByName('help') is None:
+      mode = 'help'
+      targets = []
+    elif targets == ['clean'] and self.getNodeByName('clean') is None:
       print('== UDO: Clean ==')
       mode = 'clean'
       targets = []
-    elif targets == ['help']: # TODO: Make similar to clean
-      TaskHelp(self.tasks).execute('exec')
-      return
 
     leaves = self.getLeaves(targets)
 
@@ -69,6 +68,11 @@ class TaskGraph:
       node.visited = False
     for node in leaves:
       node.execute(mode)
+
+    if mode == 'help':
+      print('* help: Prints this message')
+      if self.getNodeByName('clean') is None:
+        print('* clean: Cleans tasks\' outs')
 
   def check(self):
     # emptyTasks = self.checkEmpty()

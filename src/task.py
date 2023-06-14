@@ -5,7 +5,7 @@ import shutil
 
 from cache import getCache, setCache
 from config import config
-from utils import hashFile, printHelp
+from utils import hashFile
 
 class Task:
   def __init__(self, name, func, *, namePrefix = '', isSubtask = False):
@@ -41,6 +41,7 @@ class Task:
 
   def execute(self, mode):
     if mode == 'exec': return self.exec()
+    elif mode == 'help': return self.execHelp()
     elif mode == 'clean': return self.execClean()
 
   def exec(self):
@@ -69,6 +70,11 @@ class Task:
     if len(missingOuts) != 0:
       raise Exception(f'\tNot all outs were created: {missingOuts}')
     self.cacheOuts()
+    return True
+
+  def execHelp(self):
+    if not self.isSubtask:
+      print(f'* {self.name}' + (f': {self.description}' if self.description != '' else ''))
     return True
 
   def execClean(self):
@@ -173,10 +179,3 @@ def loadTasks(mod):
       tasks.extend(task.subtasks)
 
   return tasks
-
-def TaskHelp(tasks):
-  return InternalTask('help', {
-    'description': 'Prints this message',
-    'skipRun': False,
-    'actions': [lambda: printHelp(tasks)],
-  })
