@@ -1,6 +1,6 @@
 import sys
 import subprocess
-from task import TaskClean, TaskHelp
+from task import TaskHelp
 
 class TaskGraph:
   class Node:
@@ -10,16 +10,16 @@ class TaskGraph:
       self.children = []
       self.success = False
 
-    def execute(self):
+    def execute(self, mode):
       if self.visited:
         return self.success
         
       self.visited = True
       for parent in self.parents:
-        if not parent.execute():
+        if not parent.execute(mode):
           break
       else:
-        self.success = self.task.execute()
+        self.success = self.task.execute(mode)
         if not self.success:
           print(f'== uDO: "{self.task.name}" encountered an error, return code: {self.task.retCode} ==', file = sys.stderr)
 
@@ -53,16 +53,17 @@ class TaskGraph:
     self.tasks = tasks
     self.nodes = [self.Node(task) for task in tasks]
 
-  def execute(self, targets):
-    if targets == ['clean']: TaskClean(self.tasks).execute()
-    elif targets == ['help']: TaskHelp(self.tasks).execute()
-    else:
-      leaves = self.getLeaves(targets)
+  def execute(self, targets, mode = 'exec'):
+    if targets == ['help']: # TODO: Make similar to clean
+      TaskHelp(self.tasks).execute()
+      return
 
-      for node in self.nodes:
-        node.visited = False
-      for node in leaves:
-        node.execute()
+    leaves = self.getLeaves(targets)
+
+    for node in self.nodes:
+      node.visited = False
+    for node in leaves:
+      node.execute(mode)
 
   def check(self):
     # emptyTasks = self.checkEmpty()

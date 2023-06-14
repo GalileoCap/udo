@@ -1,10 +1,11 @@
 import subprocess
 import os
 import inspect
+import shutil
 
 from cache import getCache, setCache
 from config import config
-from utils import hashFile, printHelp, cleanTasks
+from utils import hashFile, printHelp
 
 class Task:
   def __init__(self, name, func, *, namePrefix = '', isSubtask = False):
@@ -34,8 +35,15 @@ class Task:
 
     if 'name' == '':
       raise Exception(f'Task must have a name: {data}')
+    
+  #************************************************************
+  #* Execution ************************************************
 
-  def execute(self):
+  def execute(self, mode):
+    if mode == 'exec': return self.exec()
+    elif mode == 'clean': return self.execClean()
+
+  def exec(self):
     if not (self.name in config['force'] or config['forceAll']) and self.shouldSkipRun():
       print('-', self.name)
       return self.retCode == 0
@@ -62,6 +70,24 @@ class Task:
       raise Exception(f'\tNot all outs were created: {missingOuts}')
     self.cacheOuts()
     return True
+
+  def execClean(self):
+    # TODO: In the documentation clean was explained as only being used to check whether to delete files, but in practice if it was callable it was called INSTEAD of deleting outs. This implementation currently follows the previous functionality but should be split into skipClean and clean.
+    # TODO: Always return True?
+    if not self.clean:
+      print('-', self.name) # TODO: Repeated code
+      return True
+
+    print('+', self.name)
+    if callable(self.clean): self.clean()
+    else:
+      for out in self.outs:
+        if os.path.isdir(out): shutil.rmtree(out)
+        elif os.path.isfile(out): os.remove(out)
+    return True
+
+  #************************************************************
+  #* Cache ****************************************************
 
   def shouldSkipRun(self):
     skipRun = self.skipRun() if callable(self.skipRun) else self.skipRun
@@ -147,14 +173,6 @@ def loadTasks(mod):
       tasks.extend(task.subtasks)
 
   return tasks
-
-def TaskClean(tasks):
-  return InternalTask('clean', {
-    'description': 'Removes all outs created by other tasks that have the "clean" attribute set as True',
-    'skipRun': False,
-    'capture': 1,
-    'actions': [lambda: cleanTasks(tasks)],
-  })
 
 def TaskHelp(tasks):
   return InternalTask('help', {

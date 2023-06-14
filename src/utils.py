@@ -75,18 +75,6 @@ def hashFile(fpath):
       md5.update(chunk)
   return md5.digest()
 
-def cleanTasks(tasks):
-  #TODO: Traverse graph to clean
-  for task in tasks:
-    if not task.isSubtask:
-      print(f'  * {task.name}')
-    if task.clean:
-      if callable(task.clean): task.clean()
-      else:
-        for out in task.outs:
-          if os.path.isdir(out): rmtree(out)
-          elif os.path.isfile(out): os.remove(out)
-
 def printHelp(tasks):
   for task in tasks:
     if not task.isSubtask:
