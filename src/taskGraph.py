@@ -60,7 +60,7 @@ class TaskGraph:
       mode = 'clean'
       targets = []
     elif targets == ['help']: # TODO: Make similar to clean
-      TaskHelp(self.tasks).execute()
+      TaskHelp(self.tasks).execute('exec')
       return
 
     leaves = self.getLeaves(targets)
