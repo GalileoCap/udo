@@ -53,8 +53,13 @@ class TaskGraph:
     self.tasks = tasks
     self.nodes = [self.Node(task) for task in tasks]
 
-  def execute(self, targets, mode = 'exec'):
-    if targets == ['help']: # TODO: Make similar to clean
+  def execute(self, targets):
+    mode = 'exec'
+    if targets == ['clean'] and self.getNodeByName('clean') is None:
+      print('== UDO: Clean ==')
+      mode = 'clean'
+      targets = []
+    elif targets == ['help']: # TODO: Make similar to clean
       TaskHelp(self.tasks).execute()
       return
 

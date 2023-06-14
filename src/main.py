@@ -29,8 +29,6 @@ if __name__ == '__main__':
   graph.calcEdges()
   graph.check()
   
-  if args.targets == ['clean']:
-    graph.execute([], 'clean')
-  else: graph.execute(args.targets)
+  graph.execute(args.targets)
 
   saveCache()
