@@ -1,33 +1,61 @@
+############################################################
+# S: Utils #################################################
+
 import os
+from pathlib import Path
+
+def filesWithExtension(d, extension):
+  return [ str(fpath) for fpath in list(Path(d).rglob(f'*{extension}')) ]
+
+############################################################
+# S: Config ################################################
 
 UDOConfig = {
-  'version': (1, 3, 0),
+  'version': (1, 4, 0),
 }
+
+SRCD = 'src'
+BUILDD = 'build'
+DOCSD = 'docs'
+
+TMPD = os.path.join(BUILDD, 'tmp')
+DISTDD = os.path.join(BUILDD, 'dist')
+CONTENTD = os.path.join(DOCSD, 'content')
+PUBLICD = os.path.join(DOCSD, 'public')
+
+NAME = 'udo'
+SRC = filesWithExtension(SRCD, '.py')
+BIN = os.path.join(DISTDD, NAME)
+INSTALLBIN = os.path.join(os.path.expanduser('/usr/local/bin'), NAME)
+
+DOCS = filesWithExtension(CONTENTD, '.md')
+
+############################################################
+# S: Tasks #################################################
 
 def TaskBuild():
   return {
     'name': 'build',
     'description': 'Compiles the executable',
-    'deps': ['src/main.py', 'src/cache.py', 'src/task.py', 'src/taskGraph.py', 'src/init.py', 'src/utils.py'],
-    'outs': ['./build', './build/dist/udo'],
+    'deps': SRC,
+    'outs': [BUILDD, BIN],
 
     'actions': [
-      'pyinstaller -F src/main.py --name udo --distpath build/dist --workpath build/tmp --specpath build',
+      f'pyinstaller -F src/main.py --name {NAME} --distpath {DISTDD} --workpath {TMPD} --specpath {BUILDD}',
     ],
   }
 
 def TaskInstall():
-  opath = os.path.expanduser('/usr/local/bin')
-
   return {
     'name': 'install',
     'description': 'Install the executable',
-    'deps': ['./build/dist/udo'],
-    'outs': [opath],
-    'clean': False,
+    'deps': [BIN],
+    'outs': [INSTALLBIN],
+    'clean': False, # TODO: input()... but remove with sudo
+    # 'clean': lambda: input('Uninstall? [y/N]').lower() in ['y', 'ye', 'yes', 'yes!', 'yea', 'yeah', 'yeah!'],
 
     'actions': [
-      f'sudo cp ./build/dist/udo {opath}', 
+      f'sudo cp {BIN} {INSTALLBIN}', 
     ],
   }
 
@@ -35,15 +63,14 @@ def TaskPublish():
   return {
     'name': 'publish',
     'description': 'Publish site',
-    'deps': ['./docs/content/_index.md', './docs/content/api.md', './docs/content/examples/basic.md', './docs/content/menu/index.md', './docs/content/posts/_index.md', './docs/content/quick-start.md'],
+    'deps': DOCS,
     'skipRun': True, # TODO: Check git branch is main
 
     'actions': [
-      'hugo -s docs --minify',
-      'git add docs && git commit -m "Deploy site"', # TODO: Get last commit
-      'git subtree push --prefix docs/public origin gh-pages', # SEE: https://gist.github.com/cobyism/4730490
+      f'hugo -s {DOCSD} --minify',
+      f'git add {DOCSD} && git commit -m "Deploy site"', # TODO: Get last commit
+      f'git subtree push --prefix {PUBLICD} origin gh-pages', # SEE: https://gist.github.com/cobyism/4730490
     ],
   }
 
 #TODO: TaskTest
-#TODO: TaskPublish
