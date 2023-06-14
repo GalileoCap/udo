@@ -19,8 +19,9 @@ class Task:
     self.description = data.get('description', '')
     self.deps = data.get('deps', [])
     self.outs = data.get('outs', [])
-    self.clean = data.get('clean', True)
     self.skipRun = data.get('skipRun', self.checkCache)
+    self.shouldClean = data.get('clean', True) # TODO: Rename to skipClean in Task attribute as well, will cause compatibility issues
+    self.cleanFunc = data.get('cleanFunc', self.dfltCleanFunc)
     self.capture = data.get('capture', 0)
     self.cache = getCache(self.name)
     self.isSubtask = isSubtask
@@ -78,18 +79,17 @@ class Task:
     return True
 
   def execClean(self):
-    # TODO: In the documentation clean was explained as only being used to check whether to delete files, but in practice if it was callable it was called INSTEAD of deleting outs. This implementation currently follows the previous functionality but should be split into skipClean and clean.
-    # TODO: Always return True?
-    if not self.clean:
+    if not self.shouldClean or (callable(self.shouldClean) and not self.shouldClean()):
       print('-', self.name) # TODO: Repeated code
       return True
 
     print('+', self.name)
-    if callable(self.clean): self.clean()
-    else:
-      for out in self.outs:
-        if os.path.isdir(out): shutil.rmtree(out)
-        elif os.path.isfile(out): os.remove(out)
+    return self.cleanFunc()
+
+  def dfltCleanFunc(self):
+    for out in self.outs:
+      if os.path.isdir(out): shutil.rmtree(out) # TODO: Don't delete non-empty directories
+      elif os.path.isfile(out): os.remove(out)
     return True
 
   #************************************************************
