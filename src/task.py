@@ -56,7 +56,7 @@ class Task:
         # TODO: What to print?
         action()
       elif type(action) == str:
-        print(action)
+        if not config['hideCmd']: print(action)
         res = subprocess.run(
           action, shell = True,
           stdout = subprocess.PIPE if self.capture < 1 else None,

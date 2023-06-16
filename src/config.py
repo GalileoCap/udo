@@ -1,4 +1,4 @@
-from utils import currVersion, dfltCache, dfltPrefix, dfltForceAll
+from utils import currVersion, dfltCache, dfltPrefix, dfltForceAll, dfltHideCmd
 
 config = {
   'version': currVersion,
@@ -6,6 +6,7 @@ config = {
   'prefix': dfltPrefix,
   'force': [],
   'forceAll': dfltForceAll,
+  'hideCmd': dfltHideCmd,
 }
 
 def loadConfig(mod, args):
@@ -24,6 +25,8 @@ def loadConfig(mod, args):
     args.targets.extend(config['force'])
   if args.forceAll is not None:
     config['forceAll'] = args.forceAll
+  if args.hideCmd is not None:
+    config['hideCmd'] = args.hideCmd
 
 def checkVersion():
   # TODO: Check config['version'] is correct type and lenght

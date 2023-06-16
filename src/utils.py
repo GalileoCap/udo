@@ -12,6 +12,7 @@ dfltCache = './.udo.db'
 dfltPrefix = 'Task'
 dfltForce = ''
 dfltForceAll = False
+dfltHideCmd = False
 dfltInit = False
 
 def parseArgs():
@@ -48,6 +49,10 @@ def parseArgs():
   parser.add_argument(
     '--forceAll', default = None, action = 'store_true',
     help = f'Force the execution of all targets (default: {dfltForceAll})',
+  )
+  parser.add_argument(
+    '--hideCmd', default = None, action = 'store_true',
+    help = f'Don\'t print executed commands (default: {dfltHideCmd})',
   )
   parser.add_argument(
     '--init', default = dfltInit, action = 'store_true',
