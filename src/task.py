@@ -53,8 +53,10 @@ class Task:
     print('+', self.name)
     for action in self.actions:
       if callable(action):
+        # TODO: What to print?
         action()
       elif type(action) == str:
+        print(action)
         res = subprocess.run(
           action, shell = True,
           stdout = subprocess.PIPE if self.capture < 1 else None,
