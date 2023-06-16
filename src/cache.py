@@ -22,6 +22,8 @@ def getCache(name):
   return Cache.get(name, {})
 
 def setCache(name, cache):
-  if len(cache) != 0:
+  if cache is None or len(cache) == 0:
+    Cache.pop(name, None)
+  else:
     Cache[name] = cache
     saveCache()

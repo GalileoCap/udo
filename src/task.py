@@ -86,6 +86,7 @@ class Task:
       return True
 
     print('+', self.name)
+    setCache(self.name, {})
     return self.cleanFunc()
 
   def dfltCleanFunc(self):
