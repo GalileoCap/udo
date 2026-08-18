@@ -1,4 +1,4 @@
-baseURL: 'https://dev.galileocap.me/udo'
+baseURL: 'https://galileocap.github.io/udo/'
 languageCode: 'en-us'
 title: 'uDO'
 theme: 'hugo-book'
